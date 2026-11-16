@@ -1,17 +1,20 @@
 import random
 from tamagotchi import Tamagotchi
+from utils import clear_screen
 
 def pet_screen(pet):
-    print(f"Choose an action for {pet.name}:") # input in here
-    print("1. Feed")    
-    print("2. Play")
-    print("3. Sleep")
-    print("4. Heal")
-    print("5. Rename")
-    print("6. Exit")
     while True:
+        clear_screen()
+        print(f"Choose an action for {pet.name}:")
+        print("1. Feed")
+        print("2. Play")
+        print("3. Sleep")
+        print("4. Heal")
+        print("5. Rename")
+        print("6. Exit")
+
         choice = input("Your choice: ")
-        if choice == ["1", "2", "3", "4", "5"]:
+        if choice in ["1", "2", "3", "4", "5"]:
             if choice == "1":
                 pet.feed()
             elif choice == "2":

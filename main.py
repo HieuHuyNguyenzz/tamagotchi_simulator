@@ -1,17 +1,22 @@
-import __main__
-from tamagotchi import Tamagotchi
-from storage import store_status, load_status
-from screen_displays import main_menu, pet_screen
-from utils import init_pets, clear_screen
+from screen_displays import main_menu, pet_screen, play_menu
+from utils import init_pets
 
 
 def main():
     pets = init_pets()
-    selected_pet = main_menu(pets)
-    clear_screen()
-    if selected_pet == 0:
-        return 
-    pet_screen(selected_pet)
+
+    while True:
+        action = main_menu()
+
+        if action == "play":
+            selected_pet = play_menu(pets)
+            if selected_pet is not None:
+                pet_screen(selected_pet)
+        elif action == "save":
+            print("Save functionality is not implemented yet.")
+        elif action == "quit":
+            print("Exiting the Tamagotchi Simulator. Goodbye!")
+            return
 
 
 if __name__ == "__main__":
