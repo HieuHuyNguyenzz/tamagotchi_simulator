@@ -1,5 +1,6 @@
 from tamagotchi import Tamagotchi
 from time import sleep
+from utils import clear_screen
 
 def main_menu(pets):
     print("Welcome to the Tamagotchi Simulator")
@@ -22,3 +23,6 @@ def main_menu(pets):
             return 0
         else:
             print("Invalid selection. Must be a valid pet number. Please try again.")
+            sleep(2)
+            clear_screen()
+            main_menu(pets)
