@@ -73,16 +73,25 @@ class Tamagotchi:
         if not self.is_alive or hours <= 0:
             return False
 
-        self.hunger = self._clamp(self.hunger + (5 * hours))
-        self.boredom = self._clamp(self.boredom + (4 * hours))
-        self.exhaustion = self._clamp(self.exhaustion + (3 * hours))
+        # Health decreases only after the first need reaches 80.
+        hours_until_critical = min(
+            max(0, (80 - self.hunger) / 5),
+            max(0, (80 - self.boredom) / 4),
+            max(0, (80 - self.exhaustion) / 3),
+        )
+        hours_until_death = hours_until_critical + self.health / 5
+        elapsed_hours = min(hours, hours_until_death)
 
-        needs_are_critical = max(self.hunger, self.boredom, self.exhaustion) >= 80
-        if needs_are_critical:
-            self.health = self._clamp(self.health - (5 * hours))
+        self.hunger = self._clamp(self.hunger + 5 * elapsed_hours)
+        self.boredom = self._clamp(self.boredom + 4 * elapsed_hours)
+        self.exhaustion = self._clamp(self.exhaustion + 3 * elapsed_hours)
 
-        if self.health <= self.MIN_VALUE:
+        if hours >= hours_until_death:
+            self.health = self.MIN_VALUE
             self.is_alive = False
+        else:
+            critical_hours = max(0, elapsed_hours - hours_until_critical)
+            self.health = self._clamp(self.health - 5 * critical_hours)
 
         return True
 

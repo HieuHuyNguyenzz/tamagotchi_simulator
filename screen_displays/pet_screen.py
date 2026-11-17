@@ -30,6 +30,7 @@ def pet_screen(pet, pets=None, last_updated_at=None):
         print("7. Back")
 
         choice = input("Your choice: ")
+        last_updated_at = update_pets_for_elapsed_time(pets, last_updated_at)
 
         if choice == "1":
             if pet.feed():
@@ -49,6 +50,7 @@ def pet_screen(pet, pets=None, last_updated_at=None):
             _pause_before_next_screen()
         elif choice == "5":
             new_name = input("Enter the new name: ").strip()
+            last_updated_at = update_pets_for_elapsed_time(pets, last_updated_at)
             if new_name:
                 if pet.rename(new_name):
                     trigger_random_event(pets)

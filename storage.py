@@ -1,4 +1,3 @@
-
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,19 +16,49 @@ def _utc_now():
     return datetime.now(timezone.utc)
 
 
+def _validate_pet_state(state):
+    """Reject malformed data instead of silently changing it while loading."""
+    if not isinstance(state, dict):
+        raise ValueError("Each pet must be a JSON object.")
+
+    name = state["name"]
+    if not isinstance(name, str) or not name.strip():
+        raise ValueError("Pet names must be non-empty strings.")
+
+    for field in ("hunger", "health", "boredom", "exhaustion"):
+        value = state[field]
+        if type(value) not in (int, float) or not 0 <= value <= 100:
+            raise ValueError(f"{field} must be a finite number from 0 to 100.")
+
+    if type(state["is_alive"]) is not bool:
+        raise ValueError("is_alive must be a boolean.")
+    if state["is_alive"] != (state["health"] > 0):
+        raise ValueError("Health and living/dead status are inconsistent.")
+
+
 def store_status(pets, file_path=DEFAULT_SAVE_PATH, now=None):
     """Save all pets and the timestamp of the save operation as JSON."""
     if len(pets) != 3:
         raise SaveLoadError("A save must contain exactly three pets.")
 
-    timestamp = now or _utc_now()
-    payload = {
-        "last_updated_at": timestamp.astimezone(timezone.utc).isoformat(),
-        "pets": [pet.to_dict() for pet in pets],
-    }
+    try:
+        timestamp = now or _utc_now()
+        if timestamp.tzinfo is None or timestamp.utcoffset() is None:
+            raise ValueError("The save timestamp must include a timezone.")
+        timestamp = timestamp.astimezone(timezone.utc)
+        states = [pet.to_dict() for pet in pets]
+        for state in states:
+            _validate_pet_state(state)
+        payload = {
+            "last_updated_at": timestamp.isoformat(),
+            "pets": states,
+        }
+        serialized = json.dumps(payload, indent=2, allow_nan=False)
+    except (KeyError, TypeError, ValueError, OverflowError) as error:
+        raise SaveLoadError("Cannot save an invalid game state.") from error
 
     try:
-        Path(file_path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        Path(file_path).write_text(serialized, encoding="utf-8")
     except OSError as error:
         raise SaveLoadError(f"Could not write save file: {error}") from error
 
@@ -42,18 +71,23 @@ def load_status(file_path=DEFAULT_SAVE_PATH, now=None):
         data = json.loads(Path(file_path).read_text(encoding="utf-8"))
     except FileNotFoundError as error:
         raise SaveLoadError("Save file does not exist.") from error
-    except (OSError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, RecursionError) as error:
         raise SaveLoadError("Save file is missing, unreadable, or invalid JSON.") from error
 
     try:
+        if not isinstance(data, dict):
+            raise ValueError("The save must be a JSON object.")
         saved_at = datetime.fromisoformat(data["last_updated_at"])
+        if saved_at.tzinfo is None or saved_at.utcoffset() is None:
+            raise ValueError("The save timestamp must include a timezone.")
         saved_at = saved_at.astimezone(timezone.utc)
         saved_pets = data["pets"]
-        if len(saved_pets) != 3:
+        if not isinstance(saved_pets, list) or len(saved_pets) != 3:
             raise ValueError("save must contain exactly three pets")
 
         pets = []
         for saved_pet in saved_pets:
+            _validate_pet_state(saved_pet)
             pet = Tamagotchi(
                 saved_pet["name"],
                 hunger=saved_pet["hunger"],
@@ -61,10 +95,8 @@ def load_status(file_path=DEFAULT_SAVE_PATH, now=None):
                 boredom=saved_pet["boredom"],
                 exhaustion=saved_pet["exhaustion"],
             )
-            if not saved_pet["is_alive"]:
-                pet.is_alive = False
             pets.append(pet)
-    except (KeyError, TypeError, ValueError) as error:
+    except (KeyError, TypeError, ValueError, OverflowError) as error:
         raise SaveLoadError("Save file has an invalid game state.") from error
 
     current_time = now or _utc_now()

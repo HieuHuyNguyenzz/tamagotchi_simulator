@@ -30,8 +30,9 @@ def run_game(pets, save_path=DEFAULT_SAVE_PATH):
             sleep(2)
         elif action == "load":
             try:
-                pets = load_status(save_path)
-                last_updated_at = utc_now()
+                loaded_at = utc_now()
+                pets = load_status(save_path, now=loaded_at)
+                last_updated_at = loaded_at
                 print("Game loaded successfully.")
             except SaveLoadError as error:
                 print(f"Could not load the game: {error}")

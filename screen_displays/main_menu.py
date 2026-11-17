@@ -13,7 +13,7 @@ def main_menu():
         print("4. Load")
         print("5. Quit")
 
-        choice = input("Choose an option: ")
+        choice = input("Choose an option: ").strip()
 
         if choice == "1":
             return "play"
@@ -42,12 +42,18 @@ def play_menu(pets):
 
         choice = input("Enter the number of the Tamagotchi you want to select: ")
 
-        if choice.isdigit() and 1 <= int(choice) <= len(pets):
-            selected_pet = pets[int(choice) - 1]
+        try:
+            selection = int(choice)
+        except ValueError:
+            print("Invalid selection. Please enter a valid number.")
+            continue
+
+        if 1 <= selection <= len(pets):
+            selected_pet = pets[selection - 1]
             print(f"You have selected {selected_pet.name}!")
             return selected_pet
 
-        if choice == str(len(pets) + 1):
+        if selection == len(pets) + 1:
             return None
 
         print("Invalid selection. Please try again.")

@@ -8,11 +8,12 @@ def utc_now():
 
 def update_pets_for_elapsed_time(pets, previous_time, now=None):
     """Apply clock-based changes to every pet and return the current timestamp."""
-    current_time = now or utc_now()
+    current_time = (now or utc_now()).astimezone(timezone.utc)
     previous_time = previous_time.astimezone(timezone.utc)
-    elapsed_hours = max(
-        0, (current_time.astimezone(timezone.utc) - previous_time).total_seconds() / 3600
-    )
+    if current_time <= previous_time:
+        return previous_time
+
+    elapsed_hours = (current_time - previous_time).total_seconds() / 3600
 
     for pet in pets:
         pet.advance_time(elapsed_hours)
