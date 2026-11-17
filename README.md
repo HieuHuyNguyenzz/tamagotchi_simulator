@@ -17,9 +17,3 @@ python main.py
 - Game statistics.
 - Save and load the game using JSON.
 - Pet values change over time.
-
-## Run the tests
-
-```bash
-python -m unittest discover -s tests -v
-```
