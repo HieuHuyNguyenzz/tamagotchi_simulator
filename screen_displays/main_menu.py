@@ -8,19 +8,25 @@ def main_menu():
         print("Welcome to the Tamagotchi Simulator")
         print("___________________________________\n")
         print("1. Play")
-        print("2. Save")
-        print("3. Quit")
+        print("2. Statistics")
+        print("3. Save")
+        print("4. Load")
+        print("5. Quit")
 
         choice = input("Choose an option: ")
 
         if choice == "1":
             return "play"
         if choice == "2":
-            return "save"
+            return "statistics"
         if choice == "3":
+            return "save"
+        if choice == "4":
+            return "load"
+        if choice == "5":
             return "quit"
 
-        print("Invalid choice. Please select 1, 2, or 3.")
+        print("Invalid choice. Please select a number from 1 to 5.")
 
 
 def play_menu(pets):

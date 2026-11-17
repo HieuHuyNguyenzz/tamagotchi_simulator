@@ -1,4 +1,10 @@
+from time import sleep
+
 from utils import clear_screen
+
+
+def _pause_before_next_screen():
+    sleep(2)
 
 
 def pet_screen(pet):
@@ -18,21 +24,28 @@ def pet_screen(pet):
 
         if choice == "1":
             pet.feed()
+            _pause_before_next_screen()
         elif choice == "2":
             pet.play()
+            _pause_before_next_screen()
         elif choice == "3":
             pet.sleep()
+            _pause_before_next_screen()
         elif choice == "4":
             pet.heal()
+            _pause_before_next_screen()
         elif choice == "5":
             new_name = input("Enter the new name: ").strip()
             if new_name:
                 pet.rename(new_name)
             else:
                 print("The name cannot be empty.")
+            _pause_before_next_screen()
         elif choice == "6":
             pet.status()
+            _pause_before_next_screen()
         elif choice == "7":
             return None
         else:
             print("Invalid choice. Please select a valid option.")
+            _pause_before_next_screen()
