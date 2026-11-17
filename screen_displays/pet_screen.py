@@ -1,6 +1,10 @@
 from time import sleep
 
-from game import trigger_random_event
+from game import (
+    trigger_random_event,
+    update_pets_for_elapsed_time,
+    utc_now,
+)
 from utils import clear_screen
 
 
@@ -8,11 +12,13 @@ def _pause_before_next_screen():
     sleep(2)
 
 
-def pet_screen(pet, pets=None):
+def pet_screen(pet, pets=None, last_updated_at=None):
     """Display the action menu for one pet until the player goes back."""
     pets = pets or [pet]
+    last_updated_at = last_updated_at or utc_now()
 
     while True:
+        last_updated_at = update_pets_for_elapsed_time(pets, last_updated_at)
         clear_screen()
         print(f"Choose an action for {pet.name}:")
         print("1. Feed")
@@ -53,7 +59,7 @@ def pet_screen(pet, pets=None):
             pet.status()
             _pause_before_next_screen()
         elif choice == "7":
-            return None
+            return last_updated_at
         else:
             print("Invalid choice. Please select a valid option.")
             _pause_before_next_screen()

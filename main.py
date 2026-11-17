@@ -17,7 +17,7 @@ def run_game(pets, save_path=DEFAULT_SAVE_PATH):
         if action == "play":
             selected_pet = play_menu(pets)
             if selected_pet is not None:
-                pet_screen(selected_pet, pets)
+                last_updated_at = pet_screen(selected_pet, pets, last_updated_at)
         elif action == "statistics":
             statistic(pets)
             sleep(2)
