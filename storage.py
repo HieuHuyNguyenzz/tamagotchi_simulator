@@ -1,6 +1,8 @@
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from tamagotchi import Tamagotchi
 
@@ -24,6 +26,7 @@ def _validate_pet_state(state):
     name = state["name"]
     if not isinstance(name, str) or not name.strip():
         raise ValueError("Pet names must be non-empty strings.")
+    name.encode("utf-8")
 
     for field in ("hunger", "health", "boredom", "exhaustion"):
         value = state[field]
@@ -58,7 +61,11 @@ def store_status(pets, file_path=DEFAULT_SAVE_PATH, now=None):
         raise SaveLoadError("Cannot save an invalid game state.") from error
 
     try:
-        Path(file_path).write_text(serialized, encoding="utf-8")
+        destination = Path(file_path)
+        with TemporaryDirectory(prefix=f".{destination.name}-", dir=destination.parent) as directory:
+            temporary_save = Path(directory) / destination.name
+            temporary_save.write_text(serialized, encoding="utf-8")
+            os.replace(temporary_save, destination)
     except OSError as error:
         raise SaveLoadError(f"Could not write save file: {error}") from error
 

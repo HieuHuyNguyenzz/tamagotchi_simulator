@@ -41,7 +41,7 @@ class Tamagotchi:
             return False
         self.hunger = self._clamp(self.hunger - amount)
         self.exhaustion = self._clamp(self.exhaustion + 5)
-        print(f"{self.name} has been fed. Hunger level: {self.hunger}")
+        print(f"{self.name} has been fed. Hunger level: {self.hunger:.0f}")
         return True
 
     def play(self, amount=20):
@@ -50,7 +50,7 @@ class Tamagotchi:
         self.boredom = self._clamp(self.boredom - amount)
         self.hunger = self._clamp(self.hunger + 10)
         self.exhaustion = self._clamp(self.exhaustion + 10)
-        print(f"{self.name} played. Boredom level: {self.boredom}")
+        print(f"{self.name} played. Boredom level: {self.boredom:.0f}")
         return True
 
     def sleep(self, amount=25):
@@ -58,14 +58,14 @@ class Tamagotchi:
             return False
         self.exhaustion = self._clamp(self.exhaustion - amount)
         self.hunger = self._clamp(self.hunger + 5)
-        print(f"{self.name} slept. Exhaustion level: {self.exhaustion}")
+        print(f"{self.name} slept. Exhaustion level: {self.exhaustion:.0f}")
         return True
 
     def heal(self, amount=20):
         if not self._can_act():
             return False
         self.health = self._clamp(self.health + amount)
-        print(f"{self.name} has been healed. Health level: {self.health}")
+        print(f"{self.name} has been healed. Health level: {self.health:.0f}")
         return True
 
     def advance_time(self, hours):
@@ -97,12 +97,13 @@ class Tamagotchi:
 
     def status(self):
         current_status = self.to_dict()
+        displayed_health = max(1, self.health) if self.is_alive else 0
         print(
             f"{self.name}'s Status - "
-            f"Hunger: {self.hunger}, "
-            f"Health: {self.health}, "
-            f"Boredom: {self.boredom}, "
-            f"Exhaustion: {self.exhaustion}, "
+            f"Hunger: {self.hunger:.0f}, "
+            f"Health: {displayed_health:.0f}, "
+            f"Boredom: {self.boredom:.0f}, "
+            f"Exhaustion: {self.exhaustion:.0f}, "
             f"Alive: {self.is_alive}"
         )
         return current_status

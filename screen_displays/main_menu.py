@@ -10,7 +10,7 @@ def main_menu():
         print("1. Play")
         print("2. Statistics")
         print("3. Save")
-        print("4. Load")
+        print("4. New Game")
         print("5. Quit")
 
         choice = input("Choose an option: ").strip()
@@ -22,7 +22,7 @@ def main_menu():
         if choice == "3":
             return "save"
         if choice == "4":
-            return "load"
+            return "new_game"
         if choice == "5":
             return "quit"
 

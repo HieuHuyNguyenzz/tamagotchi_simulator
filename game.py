@@ -30,18 +30,21 @@ def trigger_random_event(pets, rng=None):
         return None
 
     pet = rng.choice(living_pets)
-    event_name = rng.choice(["food", "sickness", "health_bonus"])
+    event_name = rng.choice(["food", "sickness", "health_change"])
 
     if event_name == "food":
         pet.hunger = pet._clamp(pet.hunger - 15)
         print(f"Random event: {pet.name} found food!")
     elif event_name == "sickness":
         pet.health = pet._clamp(pet.health - 10)
-        if pet.health == pet.MIN_VALUE:
-            pet.is_alive = False
         print(f"Random event: {pet.name} became sick.")
     else:
-        pet.health = pet._clamp(pet.health + 10)
-        print(f"Random event: {pet.name} received a health bonus!")
+        health_change = rng.choice([-10, 10])
+        pet.health = pet._clamp(pet.health + health_change)
+        effect = "bonus" if health_change > 0 else "penalty"
+        print(f"Random event: {pet.name} received a health {effect}!")
+
+    if pet.health == pet.MIN_VALUE:
+        pet.is_alive = False
 
     return event_name

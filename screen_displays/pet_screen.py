@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 
 from game import (
@@ -9,7 +10,19 @@ from utils import clear_screen
 
 
 def _pause_before_next_screen():
+    sys.stdout.flush()
     sleep(2)
+
+
+def _show_status_until_back(pet):
+    pet.status()
+    print("\n0. Back", flush=True)
+
+    while True:
+        choice = input("Your choice: ").strip()
+        if choice == "0":
+            return
+        print("Invalid choice. Enter 0 to go back.", flush=True)
 
 
 def pet_screen(pet, pets=None, last_updated_at=None):
@@ -30,6 +43,7 @@ def pet_screen(pet, pets=None, last_updated_at=None):
         print("7. Back")
 
         choice = input("Your choice: ")
+        clear_screen()
         last_updated_at = update_pets_for_elapsed_time(pets, last_updated_at)
 
         if choice == "1":
@@ -58,8 +72,7 @@ def pet_screen(pet, pets=None, last_updated_at=None):
                 print("The name cannot be empty.")
             _pause_before_next_screen()
         elif choice == "6":
-            pet.status()
-            _pause_before_next_screen()
+            _show_status_until_back(pet)
         elif choice == "7":
             return last_updated_at
         else:
