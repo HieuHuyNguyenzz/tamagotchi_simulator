@@ -32,28 +32,28 @@ def pet_screen(pet, pets=None, last_updated_at=None):
         choice = input("Your choice: ")
 
         if choice == "1":
-            pet.feed()
-            trigger_random_event(pets)
+            if pet.feed():
+                trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "2":
-            pet.play()
-            trigger_random_event(pets)
+            if pet.play():
+                trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "3":
-            pet.sleep()
-            trigger_random_event(pets)
+            if pet.sleep():
+                trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "4":
-            pet.heal()
-            trigger_random_event(pets)
+            if pet.heal():
+                trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "5":
             new_name = input("Enter the new name: ").strip()
             if new_name:
-                pet.rename(new_name)
+                if pet.rename(new_name):
+                    trigger_random_event(pets)
             else:
                 print("The name cannot be empty.")
-            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "6":
             pet.status()
