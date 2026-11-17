@@ -1,5 +1,6 @@
 from time import sleep
 
+from game import trigger_random_event
 from utils import clear_screen
 
 
@@ -7,8 +8,10 @@ def _pause_before_next_screen():
     sleep(2)
 
 
-def pet_screen(pet):
+def pet_screen(pet, pets=None):
     """Display the action menu for one pet until the player goes back."""
+    pets = pets or [pet]
+
     while True:
         clear_screen()
         print(f"Choose an action for {pet.name}:")
@@ -24,15 +27,19 @@ def pet_screen(pet):
 
         if choice == "1":
             pet.feed()
+            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "2":
             pet.play()
+            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "3":
             pet.sleep()
+            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "4":
             pet.heal()
+            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "5":
             new_name = input("Enter the new name: ").strip()
@@ -40,6 +47,7 @@ def pet_screen(pet):
                 pet.rename(new_name)
             else:
                 print("The name cannot be empty.")
+            trigger_random_event(pets)
             _pause_before_next_screen()
         elif choice == "6":
             pet.status()

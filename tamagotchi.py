@@ -68,6 +68,24 @@ class Tamagotchi:
         print(f"{self.name} has been healed. Health level: {self.health}")
         return True
 
+    def advance_time(self, hours):
+        """Advance this pet's needs by the given number of elapsed hours."""
+        if not self.is_alive or hours <= 0:
+            return False
+
+        self.hunger = self._clamp(self.hunger + (5 * hours))
+        self.boredom = self._clamp(self.boredom + (4 * hours))
+        self.exhaustion = self._clamp(self.exhaustion + (3 * hours))
+
+        needs_are_critical = max(self.hunger, self.boredom, self.exhaustion) >= 80
+        if needs_are_critical:
+            self.health = self._clamp(self.health - (5 * hours))
+
+        if self.health <= self.MIN_VALUE:
+            self.is_alive = False
+
+        return True
+
     def status(self):
         current_status = self.to_dict()
         print(
