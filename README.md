@@ -1,24 +1,24 @@
 # Tamagotchi Simulator
 
-Game Tamagotchi chạy trên terminal bằng Python.
+A terminal-based Tamagotchi game written in Python.
 
-## Chạy chương trình
+## Run the program
 
 ```bash
 python main.py
 ```
 
-## Chức năng
+## Features
 
-- Quản lý 3 thú ảo.
-- Feed, Play, Sleep, Heal và Rename.
-- Theo dõi Hunger, Health, Boredom và Exhaustion.
-- Random event.
-- Statistics.
-- Save/Load game bằng JSON.
-- Chỉ số thay đổi theo thời gian.
+- Manage three virtual pets.
+- Feed, play, sleep, heal, and rename pets.
+- Track hunger, health, boredom, and exhaustion.
+- Random events.
+- Game statistics.
+- Save and load the game using JSON.
+- Pet values change over time.
 
-## Chạy test
+## Run the tests
 
 ```bash
 python -m unittest discover -s tests -v
